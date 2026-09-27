@@ -1,0 +1,4 @@
+protocolo,convergencia_fria_s,rotas_media,controle_pacotes_por_s,controle_bits_por_s,reconv_unilateral_media_s,reconv_unilateral_desvio_s,reconv_bilateral_media_s,reconv_bilateral_desvio_s,rtt_h1_h3_ms,roteadores_h1_h3
+rip,29.0,15,0.333,592.0,175.524,6.216,12.29,6.383,0.086,3
+ospf,56.0,15,1.0,704.0,0.009,0.001,0.01,0.002,0.152,4
+bgp,4.0,12,0.211,138.5,175.002,6.201,0.125,0.015,0.151,3

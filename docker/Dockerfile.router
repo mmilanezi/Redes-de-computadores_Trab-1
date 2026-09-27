@@ -1,0 +1,13 @@
+# Imagem do roteador: FRRouting (sucessor mantido do Quagga) + ferramentas de medicao.
+FROM frrouting/frr:v8.4.1
+
+# tcpdump: contagem de pacotes/bytes de controle por protocolo
+# iproute2: renomeacao deterministica das interfaces
+# iputils:  ping/RTT
+# jq:       parsing das saidas JSON do vtysh nas coletas
+RUN apk add --no-cache tcpdump iproute2 iputils jq bash
+
+COPY entrypoint-router.sh /usr/local/bin/entrypoint-router.sh
+RUN chmod +x /usr/local/bin/entrypoint-router.sh
+
+ENTRYPOINT ["/usr/local/bin/entrypoint-router.sh"]

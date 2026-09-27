@@ -1,0 +1,14 @@
+# capturas brutas: regeneraveis por scripts/coletar_metricas.py e pesadas
+resultados/pcap/
+
+# marcador local do protocolo ativo
+.proto_ativo
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# sistema
+.DS_Store
+Thumbs.db

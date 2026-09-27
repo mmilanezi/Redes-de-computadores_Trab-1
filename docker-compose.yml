@@ -1,0 +1,349 @@
+# ===========================================================================
+# Topologia fisica do Trabalho I - Redes de Computadores (UNISINOS 2026/2)
+#
+# 5 roteadores FRRouting em anel, 3 Sistemas Autonomos, 5 redes de acesso.
+# Cada enlace ponto-a-ponto e uma rede bridge dedicada, de modo que o
+# encaminhamento entre LANs dependa exclusivamente do protocolo em estudo.
+#
+# ARQUIVO GERADO por scripts/gerar_topologia.py  .
+#
+# O protocolo ativo vem da variavel de ambiente PROTO (rip|ospf|bgp).
+# Usar os scripts de orquestracao em vez de chamar o compose diretamente.
+# ===========================================================================
+
+services:
+  r1:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.router
+    image: trabalho1-frr:8.4.1
+    container_name: r1
+    hostname: r1
+    environment:
+      ROUTER: r1
+      PROTO: ${PROTO:?defina PROTO=rip|ospf|bgp}
+      IFMAP: "10.1.0.1=lan 172.16.12.1=to-r2 172.16.15.1=to-r5"
+      ASN: "65001"
+    volumes:
+      - ./configs:/etc/frr/configs:ro
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+      - NET_RAW
+      - NET_BIND_SERVICE
+    sysctls:
+      net.ipv4.ip_forward: 1
+      net.ipv4.conf.all.rp_filter: 0
+      net.ipv4.conf.default.rp_filter: 0
+    networks:
+      lan1:
+        ipv4_address: 10.1.0.1
+      link12:
+        ipv4_address: 172.16.12.1
+      link15:
+        ipv4_address: 172.16.15.1
+    restart: "no"
+
+  r2:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.router
+    image: trabalho1-frr:8.4.1
+    container_name: r2
+    hostname: r2
+    environment:
+      ROUTER: r2
+      PROTO: ${PROTO:?defina PROTO=rip|ospf|bgp}
+      IFMAP: "10.2.0.1=lan 172.16.12.2=to-r1 172.16.23.2=to-r3"
+      ASN: "65001"
+    volumes:
+      - ./configs:/etc/frr/configs:ro
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+      - NET_RAW
+      - NET_BIND_SERVICE
+    sysctls:
+      net.ipv4.ip_forward: 1
+      net.ipv4.conf.all.rp_filter: 0
+      net.ipv4.conf.default.rp_filter: 0
+    networks:
+      lan2:
+        ipv4_address: 10.2.0.1
+      link12:
+        ipv4_address: 172.16.12.2
+      link23:
+        ipv4_address: 172.16.23.2
+    restart: "no"
+
+  r3:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.router
+    image: trabalho1-frr:8.4.1
+    container_name: r3
+    hostname: r3
+    environment:
+      ROUTER: r3
+      PROTO: ${PROTO:?defina PROTO=rip|ospf|bgp}
+      IFMAP: "10.3.0.1=lan 172.16.23.3=to-r2 172.16.34.3=to-r4"
+      ASN: "65002"
+    volumes:
+      - ./configs:/etc/frr/configs:ro
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+      - NET_RAW
+      - NET_BIND_SERVICE
+    sysctls:
+      net.ipv4.ip_forward: 1
+      net.ipv4.conf.all.rp_filter: 0
+      net.ipv4.conf.default.rp_filter: 0
+    networks:
+      lan3:
+        ipv4_address: 10.3.0.1
+      link23:
+        ipv4_address: 172.16.23.3
+      link34:
+        ipv4_address: 172.16.34.3
+    restart: "no"
+
+  r4:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.router
+    image: trabalho1-frr:8.4.1
+    container_name: r4
+    hostname: r4
+    environment:
+      ROUTER: r4
+      PROTO: ${PROTO:?defina PROTO=rip|ospf|bgp}
+      IFMAP: "10.4.0.1=lan 172.16.34.4=to-r3 172.16.45.4=to-r5"
+      ASN: "65002"
+    volumes:
+      - ./configs:/etc/frr/configs:ro
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+      - NET_RAW
+      - NET_BIND_SERVICE
+    sysctls:
+      net.ipv4.ip_forward: 1
+      net.ipv4.conf.all.rp_filter: 0
+      net.ipv4.conf.default.rp_filter: 0
+    networks:
+      lan4:
+        ipv4_address: 10.4.0.1
+      link34:
+        ipv4_address: 172.16.34.4
+      link45:
+        ipv4_address: 172.16.45.4
+    restart: "no"
+
+  r5:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.router
+    image: trabalho1-frr:8.4.1
+    container_name: r5
+    hostname: r5
+    environment:
+      ROUTER: r5
+      PROTO: ${PROTO:?defina PROTO=rip|ospf|bgp}
+      IFMAP: "10.5.0.1=lan 172.16.15.5=to-r1 172.16.45.5=to-r4"
+      ASN: "65003"
+    volumes:
+      - ./configs:/etc/frr/configs:ro
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+      - NET_RAW
+      - NET_BIND_SERVICE
+    sysctls:
+      net.ipv4.ip_forward: 1
+      net.ipv4.conf.all.rp_filter: 0
+      net.ipv4.conf.default.rp_filter: 0
+    networks:
+      lan5:
+        ipv4_address: 10.5.0.1
+      link45:
+        ipv4_address: 172.16.45.5
+      link15:
+        ipv4_address: 172.16.15.5
+    restart: "no"
+
+  h1:
+    image: nicolaka/netshoot:latest
+    container_name: h1
+    hostname: h1
+    depends_on:
+      - r1
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    command: >
+      sh -c "
+        while ip route show default | grep -q .; do ip route del default; done;
+        ip route add default via 10.1.0.1;
+        sleep infinity"
+    networks:
+      lan1:
+        ipv4_address: 10.1.0.10
+    restart: "no"
+
+  h2:
+    image: nicolaka/netshoot:latest
+    container_name: h2
+    hostname: h2
+    depends_on:
+      - r2
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    command: >
+      sh -c "
+        while ip route show default | grep -q .; do ip route del default; done;
+        ip route add default via 10.2.0.1;
+        sleep infinity"
+    networks:
+      lan2:
+        ipv4_address: 10.2.0.10
+    restart: "no"
+
+  h3:
+    image: nicolaka/netshoot:latest
+    container_name: h3
+    hostname: h3
+    depends_on:
+      - r3
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    command: >
+      sh -c "
+        while ip route show default | grep -q .; do ip route del default; done;
+        ip route add default via 10.3.0.1;
+        sleep infinity"
+    networks:
+      lan3:
+        ipv4_address: 10.3.0.10
+    restart: "no"
+
+  h4:
+    image: nicolaka/netshoot:latest
+    container_name: h4
+    hostname: h4
+    depends_on:
+      - r4
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    command: >
+      sh -c "
+        while ip route show default | grep -q .; do ip route del default; done;
+        ip route add default via 10.4.0.1;
+        sleep infinity"
+    networks:
+      lan4:
+        ipv4_address: 10.4.0.10
+    restart: "no"
+
+  h5:
+    image: nicolaka/netshoot:latest
+    container_name: h5
+    hostname: h5
+    depends_on:
+      - r5
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    command: >
+      sh -c "
+        while ip route show default | grep -q .; do ip route del default; done;
+        ip route add default via 10.5.0.1;
+        sleep infinity"
+    networks:
+      lan5:
+        ipv4_address: 10.5.0.10
+    restart: "no"
+
+networks:
+  lan1:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 10.1.0.0/24
+          gateway: 10.1.0.254
+
+  lan2:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 10.2.0.0/24
+          gateway: 10.2.0.254
+
+  lan3:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 10.3.0.0/24
+          gateway: 10.3.0.254
+
+  lan4:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 10.4.0.0/24
+          gateway: 10.4.0.254
+
+  lan5:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 10.5.0.0/24
+          gateway: 10.5.0.254
+
+  link12:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.16.12.0/29
+          gateway: 172.16.12.6
+
+  link23:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.16.23.0/29
+          gateway: 172.16.23.6
+
+  link34:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.16.34.0/29
+          gateway: 172.16.34.6
+
+  link45:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.16.45.0/29
+          gateway: 172.16.45.6
+
+  link15:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.16.15.0/29
+          gateway: 172.16.15.6

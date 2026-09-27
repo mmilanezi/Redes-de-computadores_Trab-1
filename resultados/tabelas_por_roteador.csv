@@ -1,0 +1,16 @@
+protocolo,roteador,fib,rib,rotas_do_protocolo,base_protocolo
+rip,r1,15,15,11,15
+rip,r2,15,15,11,15
+rip,r3,15,15,11,15
+rip,r4,15,15,11,15
+rip,r5,15,15,11,15
+ospf,r1,15,19,15,10
+ospf,r2,15,19,15,10
+ospf,r3,15,19,15,10
+ospf,r4,15,19,15,10
+ospf,r5,15,19,15,10
+bgp,r1,12,12,8,14
+bgp,r2,12,12,8,12
+bgp,r3,12,12,8,12
+bgp,r4,12,12,8,14
+bgp,r5,12,12,8,18
